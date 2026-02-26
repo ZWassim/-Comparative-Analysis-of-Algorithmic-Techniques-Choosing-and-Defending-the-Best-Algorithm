@@ -1,0 +1,30 @@
+Which algorithm is faster for large inputs and why?
+The greedy algorithm is exponentially faster for large inputs. With O(n log n) time complexity, it can handle 10,000 tasks in milliseconds, while brute force with O(2ⁿ) would take billions of years. The greedy approach makes a single pass through sorted tasks, making locally optimal choices that lead to the global optimum.
+
+Which algorithm is easier to maintain and scale?
+The greedy algorithm is significantly easier to maintain and scale. Its simple logic (sort by end time, select non-overlapping tasks) is intuitive and requires minimal code. It scales linearly with input size, making it perfect for real-time systems handling thousands of requests per second.
+
+What are the memory trade-offs?
+The greedy algorithm uses O(n) memory primarily for sorting, while brute force uses O(2ⁿ) memory in worst case due to recursive call stack and storing all combinations. Greedy is memory-efficient, whereas brute force quickly exhausts available memory.
+
+
+I recommend implementing the greedy algorithm for the delivery platform backend. Here's why:
+
+Performance: With O(n log n) time complexity, it can process thousands of tasks in real-time, meeting the system's requirements.
+
+Optimal Results: For interval scheduling problems, the earliest-end-time greedy strategy always produces the optimal maximum number of non-overlapping tasks.
+
+Real-time Capability: The algorithm can process tasks as they arrive, maintaining a running selection without needing to reconsider past decisions.
+
+Resource Efficiency: Minimal memory footprint allows handling more concurrent requests.
+
+When brute force might be relevant:
+
+Educational purposes: Understanding the problem space and verifying greedy optimality
+
+Very small inputs (< 20 tasks) where exact solutions are needed and performance isn't critical
+
+When tasks have complex constraints that break the greedy optimality condition (though this specific problem guarantees greedy optimality)
+
+The greedy approach provides the perfect balance of optimality, performance, and maintainability for a production real-time system.
+
