@@ -1,8 +1,5 @@
-// Brute-Force Solution (Recursive)
 function bruteForceMaxTasks(tasks) {
     if (tasks.length === 0) return [];
-    
-    // Sort tasks by start time for consistent processing
     const sorted = [...tasks].sort((a, b) => a.start - b.start);
     let maxCount = 0;
     let bestCombination = [];
@@ -15,11 +12,7 @@ function bruteForceMaxTasks(tasks) {
             }
             return;
         }
-        
-        // Option 1: Skip current task
         findCombinations(index + 1, lastEndTime, currentCombination);
-        
-        // Option 2: Take current task if it doesn't overlap
         const currentTask = sorted[index];
         if (currentTask.start >= lastEndTime) {
             currentCombination.push(currentTask);
@@ -32,11 +25,8 @@ function bruteForceMaxTasks(tasks) {
     return bestCombination;
 }
 
-// Greedy Solution (Earliest End Time)
 function greedyMaxTasks(tasks) {
     if (tasks.length === 0) return [];
-    
-    // Sort by end time (earliest first)
     const sorted = [...tasks].sort((a, b) => a.end - b.end);
     const selected = [];
     let lastEnd = 0;
@@ -47,36 +37,52 @@ function greedyMaxTasks(tasks) {
             lastEnd = task.end;
         }
     }
-    
     return selected;
 }
 
-// Generate random tasks for testing
 function generateRandomTasks(count) {
     const tasks = [];
     for (let i = 0; i < count; i++) {
         const start = Math.floor(Math.random() * 1000);
         const duration = Math.floor(Math.random() * 50) + 1;
-        tasks.push({
-            start: start,
-            end: start + duration
-        });
+        tasks.push({ start, end: start + duration });
     }
     return tasks;
 }
 
-// Test with sample input
 const sampleTasks = [
-    { start: 1, end: 3 },
-    { start: 2, end: 5 },
-    { start: 4, end: 6 },
-    { start: 6, end: 7 },
-    { start: 5, end: 9 },
-    { start: 8, end: 10 }
+    { start: 1, end: 3 }, { start: 2, end: 5 }, { start: 4, end: 6 },
+    { start: 6, end: 7 }, { start: 5, end: 9 }, { start: 8, end: 10 }
 ];
 
-console.log("Sample Input Test:");
-console.log("Brute Force Result:", bruteForceMaxTasks(sampleTasks).map(t => `(${t.start}-${t.end})`));
-console.log("Greedy Result:", greedyMaxTasks(sampleTasks).map(t => `(${t.start}-${t.end})`));
-console.log("Both return same result:", 
-    JSON.stringify(bruteForceMaxTasks(sampleTasks)) === JSON.stringify(greedyMaxTasks(sampleTasks)));
+console.log("Sample Input Results:");
+console.log("Brute Force:", bruteForceMaxTasks(sampleTasks).map(t => `(${t.start}-${t.end})`).join(' '));
+console.log("Greedy:", greedyMaxTasks(sampleTasks).map(t => `(${t.start}-${t.end})`).join(' '));
+console.log("Match:", JSON.stringify(bruteForceMaxTasks(sampleTasks)) === JSON.stringify(greedyMaxTasks(sampleTasks)));
+
+console.log("\n" + "=".repeat(50) + "\n");
+
+const largeTasks = generateRandomTasks(10000);
+console.time("Greedy (10,000 tasks)");
+const greedyResult = greedyMaxTasks(largeTasks);
+console.timeEnd("Greedy (10,000 tasks)");
+
+console.log("\n" + "=".repeat(50) + "\n");
+
+console.log("COMPARISON ANALYSIS:");
+console.log("1. Which algorithm is faster for large inputs and why?");
+console.log("   The greedy algorithm is exponentially faster with O(n log n) vs O(2^n).");
+console.log("   It processes 10,000 tasks in milliseconds while brute force would take billions of years.");
+console.log("\n2. Which algorithm is easier to maintain and scale?");
+console.log("   Greedy is easier to maintain with simple logic and scales linearly with input size.");
+console.log("\n3. What are the memory trade-offs?");
+console.log("   Greedy: O(n) memory for sorting. Brute Force: O(2^n) memory - impractical.");
+console.log("\n" + "=".repeat(50) + "\n");
+
+console.log("RECOMMENDATION:");
+console.log("Use the Greedy algorithm for the delivery platform backend because:");
+console.log("- Processes thousands of tasks in real-time (O(n log n))");
+console.log("- Always produces optimal results for this problem type");
+console.log("- Minimal memory footprint");
+console.log("- Simple to implement and maintain");
+console.log("\nBrute force is only relevant for educational purposes or inputs with < 20 tasks.");
