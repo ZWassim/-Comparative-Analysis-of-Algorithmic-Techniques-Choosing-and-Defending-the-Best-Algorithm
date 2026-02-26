@@ -1,0 +1,82 @@
+// Brute-Force Solution (Recursive)
+function bruteForceMaxTasks(tasks) {
+    if (tasks.length === 0) return [];
+    
+    // Sort tasks by start time for consistent processing
+    const sorted = [...tasks].sort((a, b) => a.start - b.start);
+    let maxCount = 0;
+    let bestCombination = [];
+    
+    function findCombinations(index, lastEndTime, currentCombination) {
+        if (index === sorted.length) {
+            if (currentCombination.length > maxCount) {
+                maxCount = currentCombination.length;
+                bestCombination = [...currentCombination];
+            }
+            return;
+        }
+        
+        // Option 1: Skip current task
+        findCombinations(index + 1, lastEndTime, currentCombination);
+        
+        // Option 2: Take current task if it doesn't overlap
+        const currentTask = sorted[index];
+        if (currentTask.start >= lastEndTime) {
+            currentCombination.push(currentTask);
+            findCombinations(index + 1, currentTask.end, currentCombination);
+            currentCombination.pop();
+        }
+    }
+    
+    findCombinations(0, 0, []);
+    return bestCombination;
+}
+
+// Greedy Solution (Earliest End Time)
+function greedyMaxTasks(tasks) {
+    if (tasks.length === 0) return [];
+    
+    // Sort by end time (earliest first)
+    const sorted = [...tasks].sort((a, b) => a.end - b.end);
+    const selected = [];
+    let lastEnd = 0;
+    
+    for (const task of sorted) {
+        if (task.start >= lastEnd) {
+            selected.push(task);
+            lastEnd = task.end;
+        }
+    }
+    
+    return selected;
+}
+
+// Generate random tasks for testing
+function generateRandomTasks(count) {
+    const tasks = [];
+    for (let i = 0; i < count; i++) {
+        const start = Math.floor(Math.random() * 1000);
+        const duration = Math.floor(Math.random() * 50) + 1;
+        tasks.push({
+            start: start,
+            end: start + duration
+        });
+    }
+    return tasks;
+}
+
+// Test with sample input
+const sampleTasks = [
+    { start: 1, end: 3 },
+    { start: 2, end: 5 },
+    { start: 4, end: 6 },
+    { start: 6, end: 7 },
+    { start: 5, end: 9 },
+    { start: 8, end: 10 }
+];
+
+console.log("Sample Input Test:");
+console.log("Brute Force Result:", bruteForceMaxTasks(sampleTasks).map(t => `(${t.start}-${t.end})`));
+console.log("Greedy Result:", greedyMaxTasks(sampleTasks).map(t => `(${t.start}-${t.end})`));
+console.log("Both return same result:", 
+    JSON.stringify(bruteForceMaxTasks(sampleTasks)) === JSON.stringify(greedyMaxTasks(sampleTasks)));
